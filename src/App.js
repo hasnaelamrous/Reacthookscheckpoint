@@ -1,80 +1,93 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MovieList from "./Components/MovieList";
-import MovieCard from "./Components/MovieCard";  
 import Filter from "./Components/Filter";
+import AddMovie from "./Components/AddMovie";
 import film from "./film.jpg";
-
-const API_URL =
-  "https://api.themoviedb.org/3/movie/popular?api_key=c82ab0405fb981cfd52454edfc40eb87";
-
+import film1 from "./film1.jpg";
+import film2 from "./film2.jpg";
+import film3 from "./film3.jpg";
+import film4 from "./film4.jpg";
+import film5 from "./film5.jpg";
+import film6 from "./film6.jpg";
+import film7 from "./film7.jpg";
+import film8 from "./film8.jpg";
 function App() {
-  const [movies, setMovies] = useState([]);
-  const [myMovies, setMyMovies] = useState([]);
+  const [movies, setMovies] = useState([
+       { title: "Inception",
+         description: "A skilled thief enters people's dreams.",
+         poster: film3,
+         rating: 5 },
+       { title: "Interstellar",
+          description: "Explorers travel through a wormhole in space.",
+          poster: film1, 
+          rating: 4 },
+        { title: "Totoro",
+          description: "The film is a celebration of childhood, imagination, and the magic of nature",
+          poster: film,
+          rating: 4 },
+         { title: "Avatar: The Last Airbender",
+           description: "Aang, the last Airbender, must master all elements to save the world.",
+           poster: film4,
+           rating: 5 },
+          { title: "V for vendetta",
+            description: "In a dystopian future, a masked vigilante fights against a totalitarian regime.",
+            poster: film5,
+            rating: 4 },
+          { title: "Harry Potter and the Sorcerer's Stone",
+            description: "A young wizard, Harry Potter, discovers his magical heritage and attends Hogwarts School of Witchcraft and Wizardry.",
+            poster: film2,
+           rating: 4 },
+          { title: "The Matrix",
+            description: "A hacker discovers reality is a simulation controlled by machines.",
+            poster: film8,
+              rating: 4 },
+          { title: "The Dark Knight",
+            description: "Batman faces the Joker in a battle for Gotham City.",
+            poster: film6,
+            rating: 4 },
+  ]);
+
+  const [cart, setCart] = useState([]);
   const [filterTitle, setFilterTitle] = useState("");
   const [filterRating, setFilterRating] = useState(0);
 
-  useEffect(() => {
-    fetch(API_URL)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Erreur API: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (!data.results) {
-          throw new Error("Données API invalides");
-        }
-        const formattedMovies = data.results.map((m) => ({
-          title: m.original_title || "Untitled",
-          description: m.overview || "No description available.",
-          posterURL: m.poster_path
-            ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
-            : film, 
-          rating: m.vote_average ? m.vote_average / 2 : 0,
-        }));
-        setMovies(formattedMovies);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
-
-  const handleAddMovie = (movie) => {
-    if (!myMovies.find((m) => m.title === movie.title)) {
-      setMyMovies([...myMovies, movie]);
-    } else {
-      alert("This movie is already in your favorites!");
-    }
+  const addMovie = (newMovie) => {
+    setMovies([...movies, newMovie]);
   };
 
+ 
+  const addToCart = (movie) => {
+    setCart([...cart, movie]);
+  };
+
+  const filteredMovies = movies.filter(
+    (movie) =>
+      movie.title.toLowerCase().includes(filterTitle.toLowerCase()) &&
+      movie.rating >= filterRating
+  );
+
   return (
-    <div style={{ textAlign: "center" }}>
-      <h1 className="text-3xl font-extrabold mb-4">Popular Movies</h1>
+    <div style={{ padding: "20px" }}>
+      <h1 className="flex justify-center text-[#803737] font-bold text-3xl items-center mb-10 h-[25px]">
+        My Movie App
+      </h1>
 
       <Filter setFilterTitle={setFilterTitle} setFilterRating={setFilterRating} />
+      <AddMovie addMovie={addMovie} />
 
-      <MovieList
-        movies={movies.filter(
-          (m) =>
-            m.title.toLowerCase().includes(filterTitle.toLowerCase()) &&
-            m.rating >= filterRating
-        )}
-        handleAddMovie={handleAddMovie} 
-      />
+    
+      <MovieList movies={filteredMovies} addToCart={addToCart} />
 
-      <h2 className="text-2xl mt-10 mb-4">My Favorite Movies</h2>
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
-        {myMovies.length === 0 && <p>No favorites yet.</p>}
-        {myMovies.map((movie, index) => (
-          <MovieCard key={index} movie={movie} />
-        ))}
-      </div>
+      <p className="mt-4 font-semibold">Items in cart: {cart.length}</p>
     </div>
   );
 }
 
 export default App;
+
+
+
+
 
 
 

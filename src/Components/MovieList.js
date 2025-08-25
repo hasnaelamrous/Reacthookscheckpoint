@@ -1,20 +1,20 @@
-
 import React from "react";
 import MovieCard from "./MovieCard";
 
-function MovieList({ movies, handleAddMovie }) {
-  if (movies.length === 0) {
-    return <p>No movies found.</p>;
-  }
-
+function MovieList({ movies, addToCart }) { 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
+    <div className="flex flex-wrap justify-center gap-6">
       {movies.map((movie, index) => (
-        <MovieCard key={index} movie={movie} onAdd={handleAddMovie}/>
+        <MovieCard key={index} movie={movie} addToCart={addToCart} />
       ))}
     </div>
   );
 }
 
 export default MovieList;
+
+
+
+
+
 
